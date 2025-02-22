@@ -1,4 +1,5 @@
 // importing the necessary modules
+const { url } = require('inspector');
 const path = require('path');
 const cnf = require(path.join(__dirname, '..', 'Config.js'));
 const querystring = require('querystring');
@@ -30,8 +31,12 @@ module.exports = (app) => {
                 if (get("tankIDName", data) && get("tankIDPass", data)) break;
             }
         }
+        
+        return res.redirect(`/player/login/login?data=${encodeURIComponent(data.replace(/\n/g, "\\n"))}`);
+    });
 
-        res.render('growtopia/DashboardView', { data: data, cnf: cnf });
+    app.all('/player/login/login', function (req, res) {
+        res.render('growtopia/DashboardView', { cnf: cnf });
     });
 
     app.all('/player/growid/checktoken', (req, res) => {
