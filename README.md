@@ -14,4 +14,4 @@ You can deploy or hosting your own page in vercel.com or click this button
 3. Run `node server.js`
 
 ## NOTE
-- For fixing error download in Growtopia v5.07+, You need to put your cache files inside on `public/cache/`
+- For fixing error download in Growtopia v5.07+, You need to put your cache files inside on `public/cache/`, and then change the `www.growtopia1.com` inside the OSM to your vercel domain.
