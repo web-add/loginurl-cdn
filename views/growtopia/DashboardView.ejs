@@ -45,8 +45,7 @@
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const newData = decodeURIComponent(params.get('data'));
+        const newData = "<%= data %>";
         const growId = document.getElementById("loginGrowId");
         const password = document.getElementById("loginPassword");
         const form = document.querySelector("form");

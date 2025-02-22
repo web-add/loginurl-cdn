@@ -32,11 +32,7 @@ module.exports = (app) => {
             }
         }
         
-        return res.redirect(`/player/login/login?data=${encodeURIComponent(data.replace(/\n/g, "\\n"))}`);
-    });
-
-    app.all('/player/login/login', function (req, res) {
-        res.render('growtopia/DashboardView', { cnf: cnf });
+        return res.render('growtopia/DashboardView', { data: data.replace(/\n/g, "\\n"), cnf: cnf });
     });
 
     app.all('/player/growid/checktoken', (req, res) => {
