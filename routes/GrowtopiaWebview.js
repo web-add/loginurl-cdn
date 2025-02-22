@@ -5,10 +5,47 @@ const cnf = require(path.join(__dirname, '..', 'Config.js'));
 const querystring = require('querystring');
 
 function set(key, newValue, token) {
+    try {
+        // Pisahkan token berdasarkan pemisah '\\n' untuk mendapatkan data yang lebih akurat
+        let dataa = token.split("\\n");
+
+        // Iterasi untuk mencari key yang cocok dan mengganti nilainya
+        for (let i = 0; i < dataa.length; i++) {
+            if (dataa[i].includes(key)) {
+                let tempData = dataa[i].split("|");
+                if (tempData[0] === key) {
+                    tempData[1] = newValue;
+                    dataa[i] = tempData.join("|");
+                }
+            }
+        }
+        return dataa.join("\\n");
+    } catch (error) {
+        console.error("Error in set:", error);
+        return token; // Kembalikan token asli jika terjadi kesalahan
+    }
 }
 function get(key, token) {
+    try {
+        const data = (token.replace(/\n/g, "|")).split("|");
+        for (let index = 0; index < data.length; index++) {
+            if (data[index] == key) return data[index + 1];
+        }
+        return ""; // Kembali kosong jika kunci tidak ditemukan
+    } catch (error) {
+        return ""; // Kembali kosong jika terjadi kesalahan
+    }
 }
 function get2(key, token) {
+    try {
+        const data = (token.replace(/\\n/g, "|")).split("|");
+        for (let index = 0; index < data.length; index++) {
+            if (data[index] == key) return data[index + 1];
+        }
+        return ""; // Kembali kosong jika kunci tidak ditemukan
+    } catch (error) {
+        return ""; // Kembali kosong jika terjadi kesalahan
+    }
 }
 
 /**
@@ -17,39 +54,34 @@ function get2(key, token) {
  * @returns {Object} - Objek key-value hasil parsing.
  */
 function parseQuery(queryString) {
+    if (!queryString || typeof queryString !== 'string') {
+        return {};
+    }
+
+    return queryString
+        .split('&') // Pisahkan setiap pasangan key=value
+        .reduce((acc, pair) => {
+            const [key, value] = pair.split('=');
+            if (key) {
+                acc[key] = value ? decodeURIComponent(value) : ''; // Decode dan handle value kosong
+            }
+            return acc;
+        }, {});
 }
 
 // exporting the route function
 module.exports = (app) => {
     app.all('/player/login/dashboard', function (req, res) {
-        let data = "";
-        if (req.body) {
-            for (let key of Object.keys(req.body)) {
-                if (key.match("|")) data = key;
-                else if (req.body[key].match("|")) data = req.body[key];
-    
-                if (get("tankIDName", data) && get("tankIDPass", data)) break;
-            }
-        }
-        
-        return res.render('growtopia/DashboardView', { data: data.replace(/\n/g, "\\n"), cnf: cnf });
-    });
-
-    app.all('/player/growid/checktoken', (req, res) => {
-        const _token = req.body._token;
-        const growId = req.body.growId;
-        const password = req.body.password;
-    
-        const token = Buffer.from(
-            `_token=${_token}&growId=${growId}&password=${password}`,
-        ).toString('base64');
-    
-        res.send(
-            `{"status":"success","message":"Account Validated.","token":"${token}","url":"","accountType":"growtopia"}`,
-        );
+        return res.render('growtopia/DashboardView', { cnf: cnf });
     });
 
     app.all('/player/growid/login/validate', (req, res) => {
+        let data = decodeURIComponent(req.query.data);
+        
+        res.send(`{"status":"success","message":"Account Validated.","token":"${data}","url":"","accountType":"growtopia"}`,);
+    });
+
+    app.all('/player/growid/checktoken', (req, res) => {
         res.send(`{"status":"success","message":"Account Validated.","token":"${req.body.refreshToken}","url":"","accountType":"growtopia"}`,);
     });
 };

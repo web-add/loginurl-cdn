@@ -17,9 +17,14 @@ for (let file of fs.readdirSync(path.join(__dirname, 'middleware'))) {
 }
 
 // importing the routes
-for (let file of fs.readdirSync(path.join(__dirname, 'routes'))) {
-    require(path.join(__dirname, 'routes', file))(app);
-}
+require(path.join(__dirname, 'routes', 'Index.js'))(app);
+require(path.join(__dirname, 'routes', 'GrowtopiaWebview.js'))(app);
+
+// 404 route
+app.use((req, res) => {
+    console.log(`[${new Date().toLocaleString()}] Missing file: ${req.url} [${req.method}] - ${res.statusCode}`);
+    return res.sendStatus(404);
+});
 
 // exporting express app
 module.exports = app;
