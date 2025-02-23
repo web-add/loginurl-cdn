@@ -1,6 +1,7 @@
 // importing the necessary modules
 const path = require('path');
 const cnf = require(path.join(__dirname, '..', 'Config.js'));
+const fs = require('fs');
 
 // exporting the route function
 module.exports = (app) => {
@@ -14,5 +15,13 @@ loginurl|${cnf.server_data.loginurl}
 meta|${cnf.server_data.meta}
 RTENDMARKERBS1001`;
         return res.send(content);
+    });
+
+    app.all('/cache/', async (req, res, next) => {
+        if (fs.existsSync(path.join(__dirname, "..", "public", req.url))) {
+            res.sendFile(path.join(__dirname, "..", "public", req.url));
+        } else {
+            next();
+        }
     });
 };
