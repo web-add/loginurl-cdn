@@ -18,8 +18,8 @@ for (let file of fs.readdirSync(path.join(__dirname, 'middleware'))) {
 
 // importing the routes
 require(path.join(__dirname, 'routes', 'Index.js'))(app);
-require(path.join(__dirname, 'routes', 'GrowtopiaWebview.js'))(app);
 require(path.join(__dirname, 'routes', 'GrowtopiaGame.js'))(app);
+require(path.join(__dirname, 'routes', 'GrowtopiaWebview.js'))(app);
 
 // 404 route
 app.use((req, res) => {
