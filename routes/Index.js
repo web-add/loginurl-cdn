@@ -13,4 +13,6 @@ module.exports = (app) => {
         console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url} - ${res.statusCode}`);
         next();
     });
+
+    app.use(require('express').static(path.join(__dirname, '..', 'public')));
 }
