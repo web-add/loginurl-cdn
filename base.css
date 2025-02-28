@@ -1516,7 +1516,7 @@
     color: color-mix(in oklab, red 50%, transparent) !important;
   }
   .text-\[\#\] {
-    color: #;
+    color: #000000;
   }
   .text-\[\#eeeeee\] {
     color: #eeeeee;
@@ -2060,7 +2060,7 @@
       flex-direction: row-reverse;
     }
   }
-
+}
 @property --tw-translate-x {
   syntax: "*";
   inherits: false;
